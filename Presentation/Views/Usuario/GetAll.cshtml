@@ -1,0 +1,105 @@
+﻿@model List<Model.Usuario>
+
+@{
+    ViewData["Title"] = "Usuario";
+}
+@{
+    if (TempData["ModalMessage"] != null)
+    {
+        string modalMessage = TempData["ModalMessage"].ToString();
+        Html.RenderPartial("_Modal", modalMessage);
+    }
+    @if (TempData["ModalMessage"] != null)
+    {
+        <script>
+            window.onload = function () {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            };
+        </script>
+    }
+}
+
+<h1>Lista de Usuarios</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <h5>Seleccione un usuario para editarlo o (+) para agregar</h5>
+    </div>
+</div>
+
+<div style="float:right;">
+    @Html.ActionLink("+", "Form", "Usuario", htmlAttributes: new { @class = "btn btn-success" })
+</div>
+
+<br />
+<br />
+@if(Model == null){
+    <div class="alert alert-warning" role="alert">
+      No hay registros
+    </div>
+}
+else{
+<table id="tableUsuario" class="table table-responsive table-bordered">
+    <thead>
+        <tr>
+            <th scope="col" style="text-align:center">Editar</th>
+            <th scope="col" style="text-align:center">Id</th>
+            <th scope="col">Nombre</th>
+            <th scope="col" style="text-align:start">Edad</th>
+            <th scope="col">Email</th>
+            <th scope="col" style="text-align:center">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Model.Usuario objUsuario in Model)
+        {
+            <tr>
+                <td style="text-align-last: center;"><a class="btn btn-warning bi bi-pencil" href="@Url.Action("Form", "Usuario", new { IdUsuario = objUsuario.IdUsuario })"></a></td>
+                <th style="text-align:center">@objUsuario.IdUsuario</th>
+                <td>@objUsuario.Nombre</td>
+                <td style="text-align:start">@objUsuario.Edad</td>
+                <td>@objUsuario.Email</td>
+                <td style="text-align-last: center;"><a class="btn btn-danger bi bi-trash3-fill" href="@Url.Action("Delete", "Usuario", new { IdUsuario = objUsuario.IdUsuario })"></a></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                El registro se ha completado con éxito.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = document.getElementById("modal");
+            if (modal) {
+                var bootstrapModal = new bootstrap.Modal(modal);
+                bootstrapModal.show();
+            }
+        });
+        let table = new DataTable('#tableUsuario');
+    </script>
+}

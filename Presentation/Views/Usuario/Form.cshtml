@@ -1,0 +1,123 @@
+﻿@model Model.Usuario
+
+@{
+    ViewData["Title"] = "Formulario";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Usuario</h2>
+            <h5>Ingrese los datos del Usuario:</h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        @using (Html.BeginForm("Form", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form-vertical">
+                @Html.HiddenFor(model => model.IdUsuario)
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Nombre)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </span>
+                                @Html.TextBoxFor(model => model.Nombre, new { @id = "txtNombre", @class = "form-control", @onkeypress = "return LetrasEspacioYAcentos(event, 'lblErrorNombre')", @required = "required" })
+                            </div>
+                            <label class="text-danger">@Html.ValidationMessageFor(model => model.Nombre)</label>
+                            <label class="text-danger" id="lblErrorNombre"></label>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Edad)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="bi bi-calendar2-date" aria-hidden="true"></i>
+                                </span>
+                                @Html.TextBoxFor(model => model.Edad, new { @id = "txtEdad", @class = "form-control", type = "number", min = "1", max = "255", @onkeypress = "return SoloNumeros(event, 'lblErrorEdad')", @required = "required" })
+                            </div>
+                            <label class="text-danger">@Html.ValidationMessageFor(model => model.Edad)</label>
+                            <label class="text-danger" id="lblErrorEdad"></label>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.LabelFor(model => model.Email)
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="bi bi-envelope-at" aria-hidden="true"></i>
+                                </span>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @id = "txtEmail", @onblur = "return ValidarEmail(this)", @required = "required" })
+                            </div>
+                            <label class="text-danger">@Html.ValidationMessageFor(model => model.Email)</label>
+                            <label class="text-danger" id="lblErrorEmail"></label>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="submit" value="Guardar" class="btn btn-success" />
+                            @Html.ActionLink("Regresar", "GetAll", "Usuario", htmlAttributes: new { @class = "btn btn-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function LetrasEspacioYAcentos(e, controlId) {
+            var caracter = e.key;
+            if (!/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]*$/g.test(caracter)) {
+                $('#' + controlId).text("Solo se aceptan letras");
+                $('#' + controlId).css({ "color": "red" });
+                $('#' + e.target.id).css('border-color', 'red');
+                return false;
+            }
+            else {
+                $('#' + controlId).text("");
+                $('#' + e.target.id).css('border-color', 'green');
+                return true;
+            }
+        }
+        function SoloNumeros(e, controlId) {
+            var caracter = e.key;
+            if (!/^[0-9]/g.test(caracter)) {
+                $('#' + controlId).text("Solo se aceptan numeros");
+                $('#' + controlId).css({ "color": "red" });
+                $('#' + e.target.id).css('border-color', 'red');
+                return false;
+            }
+            else {
+                $('#' + controlId).text("");
+                $('#' + e.target.id).css('border-color', 'green');
+                return true;
+            }
+        }
+        function ValidarEmail() {
+            var txtEmail = $("#txtEmail");
+            var regexToEmail = /^(([^<>()[\]\\.,;:\s@@"]+(\.[^<>()[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (regexToEmail.test(txtEmail.val())) {
+                $('#txtEmail').css('border-color', 'green');
+                $('#lblErrorEmail').text("");
+            }
+            else {
+                $('#lblErrorEmail').text("Ingrese un email valido");
+                $('#lblErrorEmail').css({ "color": "red" });
+                $('#txtEmail').css('border-color', 'red');
+            }
+        }
+    </script>
+}
